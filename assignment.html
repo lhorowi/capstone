@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Breakdown - Syllabus Analyzer</title>
+    <link rel="stylesheet" href="assignment.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="nav-brand">
+                <h1>📝 Assignment Breakdown</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">📚 Syllabus Analyzer</a>
+                <a href="calendar.html" class="nav-link">📅 Calendar</a>
+                <a href="todo.html" class="nav-link">✅ To-Do List</a>
+                <a href="assignment.html" class="nav-link active">📝 Assignment Breakdown</a>
+            </div>
+        </nav>
+
+        <!-- Upload Section -->
+        <section class="upload-section" id="uploadSection">
+            <div class="upload-card">
+                <h2>📝 Assignment Instructions</h2>
+                <p>Get AI-powered help breaking down your assignment into manageable steps with suggested deadlines</p>
+                
+                <form id="assignmentForm">
+                    <div class="form-group">
+                        <label for="assignmentTitle">Assignment Title:</label>
+                        <input type="text" id="assignmentTitle" required placeholder="e.g., Research Paper on Climate Change">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="assignmentClass">Class (optional):</label>
+                        <select id="assignmentClass">
+                            <option value="">Select a class</option>
+                            <!-- Classes will be populated dynamically -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="finalDueDate">Final Due Date:</label>
+                        <input type="date" id="finalDueDate" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="assignmentInstructions">Assignment Instructions:</label>
+                        <textarea id="assignmentInstructions" rows="12" required 
+                                  placeholder="Paste the full assignment instructions here..."></textarea>
+                        <div class="helper-text">Include all details: requirements, rubric, page length, format, citation style, etc.</div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="analyzeBtn">
+                            🤖 Analyze with AI Coach
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Processing Section -->
+        <section class="processing-section" id="processingSection" style="display: none;">
+            <div class="processing-content">
+                <div class="spinner"></div>
+                <h3>AI Coach is analyzing your assignment...</h3>
+                <p id="processingStatus">Breaking down into manageable steps...</p>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section" id="resultsSection" style="display: none;">
+            <div class="results-header">
+                <h2>📊 Assignment Breakdown</h2>
+                <div class="results-actions">
+                    <button class="btn btn-primary" onclick="addAllToTodoList()">📅 Add Mock Deadlines to Calendar & To-Do</button>
+                    <button class="btn btn-secondary" onclick="clearResults()">New Assignment</button>
+                </div>
+            </div>
+            
+            <div class="results-content" id="resultsContent">
+                <!-- Results will be populated here -->
+            </div>
+        </section>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="assignment.js"></script>
+</body>
+</html>
+

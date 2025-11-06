@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Output Schema Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .schema-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .field {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-left: 3px solid #007bff;
+        }
+        .field-name {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .field-type {
+            color: #666;
+            font-size: 0.9em;
+        }
+        code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .array-item {
+            margin-left: 20px;
+            border-left: 2px solid #28a745;
+            padding-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📋 Syllabus Analyzer API Output Schema</h1>
+    
+    <p>This shows the structure of data returned by the API after processing a syllabus.</p>
+    
+    <div class="schema-section">
+        <h2>Response Structure</h2>
+        <div class="field">
+            <span class="field-name">success</span> <span class="field-type">(boolean)</span><br>
+            <code>true</code> if successful
+        </div>
+        
+        <div class="field">
+            <span class="field-name">data</span> <span class="field-type">(object)</span><br>
+            Contains the extracted syllabus information with the structure below:
+        </div>
+    </div>
+
+    <div class="schema-section">
+        <h2>📚 data.courseInfo</h2>
+        <p>Course basic information</p>
+        <div class="array-item">
+            <div class="field">
+                <span class="field-name">courseName</span> <span class="field-type">(string)</span><br>
+                Full course name
+            </div>
+            <div class="field">
+                <span class="field-name">courseCode</span> <span class="field-type">(string)</span><br>
+                Course code/number (e.g., "REL100")
+            </div>
+            <div class="field">
+                <span class="field-name">instructor</span> <span class="field-type">(string)</span><br>
+                Instructor full name
+            </div>
+            <div class="field">
+                <span class="field-name">email</span> <span class="field-type">(string)</span><br>
+                Instructor email address
+            </div>
+            <div class="field">
+                <span class="field-name">officeHours</span> <span class="field-type">(string)</span><br>
+                Office hours information
+            </div>
+            <div class="field">
+                <span class="field-name">officeLocation</span> <span class="field-type">(string)</span><br>
+                Office location/room
+            </div>
+        </div>
+    </div>
+
+    <div class="schema-section">
+        <h2>📅 data.datesAndDeadlines</h2>
+        <p>Array of all important dates and deadlines</p>
+        <div class="array-item">
+            Each item contains:
+            <div class="field">
+                <span class="field-name">date</span> <span class="field-type">(string)</span><br>
+                Exact date as written (e.g., "September 30" or "October 16")
+            </div>
+            <div class="field">
+                <span class="field-name">title</span> <span class="field-type">(string)</span><br>
+                Name of the assignment, exam, or event
+            </div>
+            <div class="field">
+                <span class="field-name">type</span> <span class="field-type">(string)</span><br>
+                Type: "assignment", "exam", "quiz", "deadline", "holiday", "break"
+            </div>
+            <div class="field">
+                <span class="field-name">description</span> <span class="field-type">(string)</span><br>
+                Detailed description
+            </div>
+            <div class="field">
+                <span class="field-name">worth</span> <span class="field-type">(string)</span><br>
+                Points or percentage (if mentioned)
+            </div>
+            <div class="field">
+                <span class="field-name">link</span> <span class="field-type">(string)</span><br>
+                URL or link if attached in the document
+            </div>
+        </div>
+    </div>
+
+    <div class="schema-section">
+        <h2>✏️ data.assignments</h2>
+        <p>Array of all assignments</p>
+        <div class="array-item">
+            Each item contains:
+            <div class="field">
+                <span class="field-name">name</span> <span class="field-type">(string)</span><br>
+                Assignment name
+            </div>
+            <div class="field">
+                <span class="field-name">description</span> <span class="field-type">(string)</span><br>
+                Full description of what's required
+            </div>
+            <div class="field">
+                <span class="field-name">dueDate</span> <span class="field-type">(string)</span><br>
+                Due date (use format from document)
+            </div>
+            <div class="field">
+                <span class="field-name">weight</span> <span class="field-type">(string)</span><br>
+                Percentage of final grade
+            </div>
+            <div class="field">
+                <span class="field-name">requirements</span> <span class="field-type">(string)</span><br>
+                Specific requirements and formatting
+            </div>
+        </div>
+    </div>
+
+    <div class="schema-section">
+        <h2>🎯 data.gradingBreakdown</h2>
+        <p>Array of grading categories</p>
+        <div class="array-item">
+            Each item contains:
+            <div class="field">
+                <span class="field-name">category</span> <span class="field-type">(string)</span><br>
+                Category name (e.g., "Participation")
+            </div>
+            <div class="field">
+                <span class="field-name">weight</span> <span class="field-type">(string)</span><br>
+                Percentage or points (e.g., "10%")
+            </div>
+            <div class="field">
+                <span class="field-name">description</span> <span class="field-type">(string)</span><br>
+                What's included in this category
+            </div>
+        </div>
+    </div>
+
+    <div class="schema-section">
+        <h2>📋 data.policies</h2>
+        <p>Array of course policies</p>
+        <div class="array-item">
+            Each item contains:
+            <div class="field">
+                <span class="field-name">type</span> <span class="field-type">(string)</span><br>
+                Policy type: "attendance", "grading", "late work", "academic integrity", "participation"
+            </div>
+            <div class="field">
+                <span class="field-name">title</span> <span class="field-type">(string)</span><br>
+                Policy heading
+            </div>
+            <div class="field">
+                <span class="field-name">description</span> <span class="field-type">(string)</span><br>
+                Complete policy text
+            </div>
+        </div>
+    </div>
+
+    <div class="schema-section">
+        <h2>📆 data.schedule</h2>
+        <p>Array of weekly schedule</p>
+        <div class="array-item">
+            Each item contains:
+            <div class="field">
+                <span class="field-name">week</span> <span class="field-type">(string)</span><br>
+                Week number (e.g., "Week 1")
+            </div>
+            <div class="field">
+                <span class="field-name">date</span> <span class="field-type">(string)</span><br>
+                Date or date range
+            </div>
+            <div class="field">
+                <span class="field-name">topic</span> <span class="field-type">(string)</span><br>
+                Topic/theme
+            </div>
+            <div class="field">
+                <span class="field-name">readings</span> <span class="field-type">(string)</span><br>
+                Required readings
+            </div>
+            <div class="field">
+                <span class="field-name">assignments</span> <span class="field-type">(string)</span><br>
+                Assignments due this week
+            </div>
+        </div>
+    </div>
+
+    <div class="schema-section">
+        <h2>👤 data.instructorContact</h2>
+        <p>Instructor contact information</p>
+        <div class="array-item">
+            <div class="field">
+                <span class="field-name">name</span> <span class="field-type">(string)</span><br>
+                Full name
+            </div>
+            <div class="field">
+                <span class="field-name">email</span> <span class="field-type">(string)</span><br>
+                Email address
+            </div>
+            <div class="field">
+                <span class="field-name">officeHours</span> <span class="field-type">(string)</span><br>
+                Office hours
+            </div>
+            <div class="field">
+                <span class="field-name">office</span> <span class="field-type">(string)</span><br>
+                Office location
+            </div>
+        </div>
+    </div>
+
+    <div class="schema-section">
+        <h2>📖 data.requiredMaterials</h2>
+        <p>Array of required course materials</p>
+        <div class="array-item">
+            Each item contains:
+            <div class="field">
+                <span class="field-name">type</span> <span class="field-type">(string)</span><br>
+                Material type: "textbook", "article", "website"
+            </div>
+            <div class="field">
+                <span class="field-name">title</span> <span class="field-type">(string)</span><br>
+                Material title
+            </div>
+            <div class="field">
+                <span class="field-name">author</span> <span class="field-type">(string)</span><br>
+                Author name
+            </div>
+            <div class="field">
+                <span class="field-name">details</span> <span class="field-type">(string)</span><br>
+                Additional details (edition, ISBN, etc.)
+            </div>
+        </div>
+    </div>
+
+    <div class="schema-section">
+        <h2>📝 Example Full Response</h2>
+        <pre style="background: #f8f9fa; padding: 15px; overflow-x: auto; border-radius: 5px;">
+{
+  "success": true,
+  "data": {
+    "courseInfo": {
+      "courseName": "Religion, Race, and Social Justice",
+      "courseCode": "REL100",
+      "instructor": "Rev. Dr. Alan Rudnick",
+      "email": "arudnick@syr.edu",
+      "officeHours": "Thursdays 11-12 PM",
+      "officeLocation": "Hall of Languages 501C"
+    },
+    "datesAndDeadlines": [
+      {
+        "date": "September 30",
+        "title": "Reflection Paper #1 Due",
+        "type": "assignment",
+        "description": "Reflection on topics covered in class",
+        "worth": "10%",
+        "link": ""
+      },
+      {
+        "date": "October 16",
+        "title": "Mid-Term Paper Due",
+        "type": "assignment",
+        "description": "Experience reflections from interview",
+        "worth": "30%",
+        "link": ""
+      }
+    ],
+    "assignments": [
+      {
+        "name": "Participation",
+        "description": "Attendance and participation in discussions",
+        "dueDate": "Ongoing",
+        "weight": "10%",
+        "requirements": "Must attend class regularly"
+      }
+    ],
+    "gradingBreakdown": [
+      {
+        "category": "Participation",
+        "weight": "10%",
+        "description": "More than two unexcused absences result in zero points"
+      },
+      {
+        "category": "Two Reflection Papers",
+        "weight": "20%",
+        "description": "2 pages each"
+      },
+      {
+        "category": "Mid-Term Paper",
+        "weight": "30%",
+        "description": "3-4 pages"
+      },
+      {
+        "category": "Final Paper",
+        "weight": "40%",
+        "description": "5-7 pages or 15-20 minute video"
+      }
+    ],
+    "policies": [...],
+    "schedule": [...],
+    "instructorContact": {...},
+    "requiredMaterials": [...]
+  }
+}
+        </pre>
+    </div>
+
+</body>
+</html>
+

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Study Buddy - Syllabus Analyzer</title>
+    <link rel="stylesheet" href="rewards.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="nav-brand">
+                <h1>🎮 My Study Buddy</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">📚 Syllabus Analyzer</a>
+                <a href="calendar.html" class="nav-link">📅 Calendar</a>
+                <a href="todo.html" class="nav-link">✅ To-Do List</a>
+                <a href="rewards.html" class="nav-link active">🎮 My Study Buddy</a>
+            </div>
+        </nav>
+
+        <!-- Points Display -->
+        <div class="points-display">
+            <div class="points-card">
+                <div class="points-icon">⭐</div>
+                <div class="points-info">
+                    <div class="points-value" id="pointsValue">0</div>
+                    <div class="points-label">Study Points</div>
+                </div>
+            </div>
+            <div class="stats-mini">
+                <div class="stat-mini">
+                    <span class="stat-mini-value" id="completedCount">0</span>
+                    <span class="stat-mini-label">Completed</span>
+                </div>
+                <div class="stat-mini">
+                    <span class="stat-mini-value" id="streakCount">0</span>
+                    <span class="stat-mini-label">Day Streak</span>
+                </div>
+                <div class="stat-mini">
+                    <span class="stat-mini-value" id="levelValue">1</span>
+                    <span class="stat-mini-label">Level</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- Character Display -->
+            <section class="character-section">
+                <div class="character-header">
+                    <h2>Your Study Buddy</h2>
+                    <button class="btn btn-secondary" onclick="showCharacterCreator()">✏️ Customize</button>
+                </div>
+                
+                <div class="character-display" id="characterDisplay">
+                    <div class="scene-background" id="sceneBackground">
+                        <!-- Background scene -->
+                    </div>
+                    <div class="character-container" id="characterContainer">
+                        <!-- Character will be displayed here -->
+                        <div class="character-body">
+                            <div class="character-face" id="characterFace">
+                                <div class="eyes">👀</div>
+                                <div class="mouth">😊</div>
+                            </div>
+                            <div class="character-outfit" id="characterOutfit">
+                                <div class="outfit-display">👕</div>
+                            </div>
+                            <div class="character-accessory" id="characterAccessory">
+                                <!-- Accessories -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="character-name" id="characterName">My Study Buddy</div>
+                
+                <!-- Quick Stats -->
+                <div class="character-stats">
+                    <div class="stat-bar">
+                        <div class="stat-label">Motivation Level</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="motivationBar" style="width: 50%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Shop/Rewards -->
+            <section class="shop-section">
+                <div class="shop-tabs">
+                    <button class="shop-tab active" onclick="showShopTab('outfits')">👕 Outfits</button>
+                    <button class="shop-tab" onclick="showShopTab('accessories')">👓 Accessories</button>
+                    <button class="shop-tab" onclick="showShopTab('scenes')">🏞️ Scenes</button>
+                    <button class="shop-tab" onclick="showShopTab('rewards')">🎁 Rewards</button>
+                </div>
+
+                <!-- Outfits Tab -->
+                <div class="shop-content" id="outfitsTab">
+                    <h3>👕 Outfits</h3>
+                    <div class="shop-grid" id="outfitsGrid">
+                        <!-- Outfits will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Accessories Tab -->
+                <div class="shop-content" id="accessoriesTab" style="display: none;">
+                    <h3>👓 Accessories</h3>
+                    <div class="shop-grid" id="accessoriesGrid">
+                        <!-- Accessories will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Scenes Tab -->
+                <div class="shop-content" id="scenesTab" style="display: none;">
+                    <h3>🏞️ Scenes</h3>
+                    <div class="shop-grid" id="scenesGrid">
+                        <!-- Scenes will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Rewards Tab -->
+                <div class="shop-content" id="rewardsTab" style="display: none;">
+                    <h3>🎁 Special Rewards</h3>
+                    <div class="shop-grid" id="rewardsGrid">
+                        <!-- Rewards will be populated here -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Recent Achievements -->
+        <section class="achievements-section">
+            <h2>🏆 Recent Achievements</h2>
+            <div class="achievements-list" id="achievementsList">
+                <!-- Achievements will be listed here -->
+            </div>
+        </section>
+
+        <!-- Character Creator Modal -->
+        <div id="characterModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Customize Your Study Buddy</h3>
+                    <button id="closeCharacterModal" class="close-btn">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="buddyName">Buddy Name:</label>
+                        <input type="text" id="buddyName" placeholder="Enter a name for your study buddy">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="buddySkin">Skin Tone:</label>
+                        <div class="color-options" id="skinToneOptions">
+                            <button class="color-option" data-color="#ffd1a3" style="background: #ffd1a3;"></button>
+                            <button class="color-option" data-color="#f4c19a" style="background: #f4c19a;"></button>
+                            <button class="color-option" data-color="#d9a679" style="background: #d9a679;"></button>
+                            <button class="color-option" data-color="#c68967" style="background: #c68967;"></button>
+                            <button class="color-option" data-color="#8d5524" style="background: #8d5524;"></button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Expression:</label>
+                        <div class="expression-options">
+                            <button class="expression-btn" data-expression="😊" onclick="selectExpression('😊')">😊</button>
+                            <button class="expression-btn" data-expression="😃" onclick="selectExpression('😃')">😃</button>
+                            <button class="expression-btn" data-expression="🤓" onclick="selectExpression('🤓')">🤓</button>
+                            <button class="expression-btn" data-expression="😎" onclick="selectExpression('😎')">😎</button>
+                            <button class="expression-btn" data-expression="🥳" onclick="selectExpression('🥳')">🥳</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn btn-primary" onclick="saveCharacter()">Save Changes</button>
+                        <button class="btn btn-secondary" onclick="closeCharacterCreator()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Purchase Confirmation Modal -->
+        <div id="purchaseModal" class="modal" style="display: none;">
+            <div class="modal-content modal-small">
+                <div class="modal-header">
+                    <h3>Confirm Purchase</h3>
+                    <button id="closePurchaseModal" class="close-btn">×</button>
+                </div>
+                <div class="modal-body">
+                    <div id="purchaseContent">
+                        <!-- Purchase details will be shown here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="rewards.js"></script>
+</body>
+</html>
+

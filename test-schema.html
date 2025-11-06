@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API Schema</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #schemaOutput {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 600px;
+            overflow: auto;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+        .error {
+            background: #ffcdd2;
+            border-left-color: #f44336;
+        }
+        .success {
+            background: #c8e6c9;
+            border-left-color: #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 API Schema Test</h1>
+    
+    <div class="container">
+        <h2>Upload Syllabus to Test</h2>
+        <input type="file" id="pdfFile" accept=".pdf">
+        <button onclick="testSchema()">Test with Uploaded PDF</button>
+        <button onclick="testWithSampleText()">Test with Sample Text</button>
+        <div id="status"></div>
+        <div id="schemaOutput"></div>
+    </div>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        
+        const BACKEND_API = 'http://localhost:3000/api/analyze-syllabus';
+        
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'status';
+            statusDiv.innerHTML = `<div class="${className}">${message}</div>`;
+        }
+        
+        async function extractTextFromPDF(file) {
+            return new Promise((resolve, reject) => {
+                const fileReader = new FileReader();
+                fileReader.onload = async function() {
+                    try {
+                        const arrayBuffer = fileReader.result;
+                        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                        let fullText = '';
+                        
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const textContent = await page.getTextContent();
+                            const pageText = textContent.items.map(item => item.str).join(' ');
+                            fullText += pageText + '\n';
+                        }
+                        
+                        resolve(fullText);
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                fileReader.readAsArrayBuffer(file);
+            });
+        }
+        
+        async function callBackendAPI(text) {
+            try {
+                showStatus('Sending request to backend API...', 'info');
+                
+                const response = await fetch(BACKEND_API, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || `HTTP ${response.status}`);
+                }
+                
+                const result = await response.json();
+                return result;
+                
+            } catch (error) {
+                showStatus(`Error: ${error.message}`, 'error');
+                throw error;
+            }
+        }
+        
+        async function displaySchema(result) {
+            const outputDiv = document.getElementById('schemaOutput');
+            outputDiv.textContent = JSON.stringify(result, null, 2);
+            showStatus('✅ Schema received and displayed below', 'success');
+        }
+        
+        async function testSchema() {
+            const fileInput = document.getElementById('pdfFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showStatus('Please select a PDF file', 'error');
+                return;
+            }
+            
+            try {
+                showStatus('Extracting text from PDF...', 'info');
+                const text = await extractTextFromPDF(file);
+                
+                showStatus('Analyzing with backend API...', 'info');
+                const result = await callBackendAPI(text);
+                
+                await displaySchema(result);
+                
+            } catch (error) {
+                showStatus(`Error: ${error.message}`, 'error');
+                console.error(error);
+            }
+        }
+        
+        async function testWithSampleText() {
+            const sampleText = `REL100: Religion, Race, and Social Justice
+
+Instructor: Rev. Dr. Alan Rudnick
+Email: arudnick@syr.edu
+Office Hours: Thursdays 11-12 PM (Hall of Languages 501C)
+
+Important Dates:
+- September 30: Reflection Paper #1 Due
+- October 16: Mid-Term Paper Due
+- November 13: Reflection Paper #2 Due
+- December 11: Final Paper Due by 2:45 PM
+
+Assignments:
+1. Participation (10%)
+2. Two Reflection Papers (20%)
+3. Mid-Term Paper (30%)
+4. Final Paper (40%)
+
+Required Materials:
+- White Too Long: The Legacy of White Supremacy in American Christianity, Robert P. Jones (2020)
+- Four Pivots: Reimagining Justice, Reimagining Ourselves, Shawn A. Ginwright (2022)`;
+            
+            try {
+                showStatus('Testing with sample text...', 'info');
+                const result = await callBackendAPI(sampleText);
+                await displaySchema(result);
+            } catch (error) {
+                showStatus(`Error: ${error.message}`, 'error');
+                console.error(error);
+            }
+        }
+        
+        // Check backend health on load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('http://localhost:3000/api/health');
+                if (response.ok) {
+                    showStatus('✅ Backend is running on http://localhost:3000', 'success');
+                } else {
+                    showStatus('⚠️ Backend is not responding. Please start it with: cd backend && npm start', 'error');
+                }
+            } catch (error) {
+                showStatus('❌ Cannot connect to backend. Please start it first: cd backend && npm start', 'error');
+            }
+        });
+    </script>
+</body>
+</html>
+

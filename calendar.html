@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Calendar - Syllabus Analyzer</title>
+    <link rel="stylesheet" href="calendar.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="nav-brand">
+                <h1>📅 Academic Calendar</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">📚 Syllabus Analyzer</a>
+                <a href="calendar.html" class="nav-link">📅 Calendar</a>
+                <a href="todo.html" class="nav-link">✅ To-Do List</a>
+                <a href="rewards.html" class="nav-link">🎮 My Study Buddy</a>
+            </div>
+        </nav>
+
+        <!-- Calendar Controls -->
+        <div class="calendar-controls">
+            <div class="controls-left">
+                <button id="prevMonth" class="btn btn-secondary">← Previous</button>
+                <h2 id="currentMonth"></h2>
+                <button id="nextMonth" class="btn btn-secondary">Next →</button>
+            </div>
+            <div class="controls-right">
+                <button id="todayBtn" class="btn btn-primary">Today</button>
+                <button id="manageClasses" class="btn btn-primary">Manage Classes</button>
+                <button id="importData" class="btn btn-primary">Import Syllabus Data</button>
+            </div>
+        </div>
+
+        <!-- Class Legend -->
+        <div class="class-legend" id="classLegend" style="display: none;">
+            <h3>📚 Class Legend</h3>
+            <div class="legend-items" id="legendItems">
+                <!-- Class legend items will be populated here -->
+            </div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <div class="day-header">Sun</div>
+                <div class="day-header">Mon</div>
+                <div class="day-header">Tue</div>
+                <div class="day-header">Wed</div>
+                <div class="day-header">Thu</div>
+                <div class="day-header">Fri</div>
+                <div class="day-header">Sat</div>
+            </div>
+            <div id="calendarGrid" class="calendar-grid">
+                <!-- Calendar days will be generated here -->
+            </div>
+        </div>
+
+        <!-- Events Panel -->
+        <div class="events-panel">
+            <div class="panel-header">
+                <h3>📋 Events & Deadlines</h3>
+                <button id="addEventBtn" class="btn btn-primary">+ Add Event</button>
+            </div>
+            <div id="eventsList" class="events-list">
+                <!-- Events will be listed here -->
+            </div>
+        </div>
+
+        <!-- To-Do List Panel -->
+        <div class="todo-panel">
+            <div class="panel-header">
+                <h3>✅ To-Do List</h3>
+                <button id="addTodoBtn" class="btn btn-primary">+ Add Task</button>
+            </div>
+            <div id="todoList" class="todo-list">
+                <!-- To-do items will be listed here -->
+            </div>
+        </div>
+
+        <!-- Event Details Modal -->
+        <div id="eventModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">Event Details</h3>
+                    <button id="closeModal" class="close-btn">×</button>
+                </div>
+                <div class="modal-body">
+                    <div id="eventDetails">
+                        <!-- Event details will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Event Modal -->
+        <div id="addEventModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add New Event</h3>
+                    <button id="closeAddModal" class="close-btn">×</button>
+                </div>
+                <div class="modal-body">
+                    <form id="addEventForm">
+                        <div class="form-group">
+                            <label for="eventTitle">Event Title:</label>
+                            <input type="text" id="eventTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventDate">Date:</label>
+                            <input type="date" id="eventDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventTime">Time (optional):</label>
+                            <input type="time" id="eventTime">
+                        </div>
+                        <div class="form-group">
+                            <label for="eventClass">Class:</label>
+                            <select id="eventClass" required>
+                                <option value="">Select a class</option>
+                                <!-- Classes will be populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventType">Type:</label>
+                            <select id="eventType">
+                                <option value="assignment">Assignment</option>
+                                <option value="exam">Exam</option>
+                                <option value="quiz">Quiz</option>
+                                <option value="deadline">Deadline</option>
+                                <option value="holiday">Holiday</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventDescription">Description:</label>
+                            <textarea id="eventDescription" rows="3"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Add Event</button>
+                            <button type="button" id="cancelAddEvent" class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Class Management Modal -->
+        <div id="classModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Manage Classes</h3>
+                    <button id="closeClassModal" class="close-btn">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="class-management">
+                        <div class="add-class-section">
+                            <h4>Add New Class</h4>
+                            <form id="addClassForm">
+                                <div class="form-group">
+                                    <label for="className">Class Name:</label>
+                                    <input type="text" id="className" required placeholder="e.g., Computer Science 101">
+                                </div>
+                                <div class="form-group">
+                                    <label for="classCode">Class Code:</label>
+                                    <input type="text" id="classCode" required placeholder="e.g., CS101">
+                                </div>
+                                <div class="form-group">
+                                    <label for="classColor">Class Color:</label>
+                                    <select id="classColor">
+                                        <option value="blue">Blue</option>
+                                        <option value="green">Green</option>
+                                        <option value="purple">Purple</option>
+                                        <option value="orange">Orange</option>
+                                        <option value="red">Red</option>
+                                        <option value="teal">Teal</option>
+                                        <option value="pink">Pink</option>
+                                        <option value="indigo">Indigo</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Add Class</button>
+                            </form>
+                        </div>
+                        
+                        <div class="existing-classes-section">
+                            <h4>Existing Classes</h4>
+                            <div id="existingClasses" class="classes-list">
+                                <!-- Existing classes will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Import Data Modal -->
+        <div id="importModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Import Syllabus Data</h3>
+                    <button id="closeImportModal" class="close-btn">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="import-section">
+                        <h4>📁 Upload JSON File</h4>
+                        <p>Upload a JSON file exported from the Syllabus Analyzer:</p>
+                        <input type="file" id="jsonFileInput" accept=".json">
+                        <button id="uploadJsonBtn" class="btn btn-primary">Upload & Import</button>
+                    </div>
+                    
+                    <div class="import-section">
+                        <h4>📋 Manual Data Entry</h4>
+                        <p>Paste JSON data from the Syllabus Analyzer:</p>
+                        <textarea id="jsonDataInput" placeholder="Paste your JSON data here..." rows="10"></textarea>
+                        <button id="importJsonBtn" class="btn btn-primary">Import Data</button>
+                    </div>
+                    
+                    <div class="import-section">
+                        <h4>🔗 Link to Syllabus Analyzer</h4>
+                        <p>If you have data in the Syllabus Analyzer, you can:</p>
+                        <a href="index.html" class="btn btn-secondary">Go to Syllabus Analyzer</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Todo Modal -->
+        <div id="addTodoModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add New Task</h3>
+                    <button id="closeTodoModal" class="close-btn">×</button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTodoForm">
+                        <div class="form-group">
+                            <label for="todoTitle">Task:</label>
+                            <input type="text" id="todoTitle" required placeholder="e.g., Study for midterm">
+                        </div>
+                        <div class="form-group">
+                            <label for="todoPriority">Priority:</label>
+                            <select id="todoPriority">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="todoDueDate">Due Date (optional):</label>
+                            <input type="date" id="todoDueDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="todoDescription">Description:</label>
+                            <textarea id="todoDescription" rows="3" placeholder="Additional notes..."></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Add Task</button>
+                            <button type="button" id="cancelTodo" class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="calendar.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syllabus Analyzer</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="nav-brand">
+                <h1>📚 Syllabus Analyzer</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">📚 Syllabus Analyzer</a>
+                <a href="calendar.html" class="nav-link">📅 Calendar</a>
+                <a href="todo.html" class="nav-link">✅ To-Do List</a>
+                <a href="rewards.html" class="nav-link">🎮 My Study Buddy</a>
+                <button class="nav-link btn-link" onclick="showCacheManager()" style="cursor: pointer;">💾 Cached Courses</button>
+            </div>        </nav>
+
+        <header>
+            <h1>📚 Syllabus Analyzer</h1>
+            <p>Upload your syllabus PDF and get AI-powered analysis of policies, dates, and deadlines</p>
+        </header>
+
+        <main>
+            <!-- Results Section (appears first when available) -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <div class="results-header">
+                    <h2>📊 Analysis Results</h2>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <button class="btn btn-primary" onclick="sendToCalendar()">📅 Send to Calendar</button>
+                        <button class="btn btn-secondary" onclick="downloadExtractedText()">Download .txt</button>
+                        <button class="btn btn-secondary" onclick="clearResults()">Upload New File</button>
+                    </div>
+                </div>
+                
+                <div class="results-content" id="resultsContent">
+                    <!-- Results will be populated here -->
+                </div>
+            </section>
+
+            <!-- Processing Section -->
+            <section class="processing-section" id="processingSection" style="display: none;">
+                <div class="processing-content">
+                    <div class="spinner"></div>
+                    <h3>Processing Document...</h3>
+                    <p id="processingStatus">Extracting text from PDF...</p>
+                </div>
+            </section>
+
+            <!-- File Upload Section (compact when results shown) -->
+            <section class="upload-section" id="uploadSection">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content">
+                        <div class="upload-icon">📄</div>
+                        <h3>Upload Syllabus</h3>
+                        <p>Drag and drop your PDF file here, or click to browse</p>
+                        <input type="file" id="fileInput" accept=".pdf" hidden>
+                        <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                            Choose File
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cache Management Section -->
+            <section class="cache-section" id="cacheSection" style="display: none;">
+                <div class="cache-header">
+                    <h2>💾 Cached Courses</h2>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <button class="btn btn-secondary" onclick="refreshCacheList()">🔄 Refresh</button>
+                        <button class="btn btn-danger" onclick="clearAllCache()">🗑️ Clear All</button>
+                        <button class="btn btn-secondary" onclick="hideCacheManager()">Close</button>
+                    </div>
+                </div>
+                <div class="cache-content" id="cacheContent">
+                    <p>Loading cached courses...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to TXT Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 500px;
+            overflow: auto;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PDF to TXT Extraction Test</h1>
+        <p>Choose an option:</p>
+        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+            <button onclick="extractFromLocalPdf()">Extract from syllabus.pdf (in folder)</button>
+            <button onclick="document.getElementById('fileUpload').click()">Upload a PDF file</button>
+        </div>
+        <input type="file" id="fileUpload" accept=".pdf" style="display:none;" onchange="handleFileUpload(event)">
+        <button onclick="downloadTxt()" id="downloadBtn" style="display:none;">Download as .txt</button>
+        <div id="status"></div>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        
+        let extractedText = '';
+
+        function reconstructAllPagesWithTables(allPagesTextContent) {
+            // Collect all text items from all pages
+            let allItems = [];
+            
+            allPagesTextContent.forEach(pageContent => {
+                allItems = allItems.concat(pageContent.items);
+            });
+            
+            // Group items by their y-position to identify rows (across all pages)
+            const rows = [];
+            const yGroups = {};
+            const TOLERANCE = 2; // pixels
+            
+            allItems.forEach(item => {
+                const y = Math.round(item.transform[5] / TOLERANCE) * TOLERANCE;
+                if (!yGroups[y]) yGroups[y] = [];
+                yGroups[y].push({
+                    text: item.str,
+                    x: item.transform[4],
+                    y: item.transform[5],
+                    width: item.width,
+                    height: item.height,
+                    pageNum: item._pageNum || 1
+                });
+            });
+            
+            // Convert to array and sort by page then y-position
+            const sortedYPositions = Object.keys(yGroups).sort((a, b) => {
+                // First sort by page number if we have it
+                const aItems = yGroups[a];
+                const bItems = yGroups[b];
+                if (aItems[0] && bItems[0] && aItems[0].pageNum !== bItems[0].pageNum) {
+                    return aItems[0].pageNum - bItems[0].pageNum;
+                }
+                // Then by y-position
+                return parseFloat(b) - parseFloat(a);
+            });
+            
+            sortedYPositions.forEach(yPos => {
+                const itemsInRow = yGroups[yPos].sort((a, b) => {
+                    // If same page, sort by x; otherwise keep page order
+                    if (a.pageNum === b.pageNum) {
+                        return a.x - b.x;
+                    }
+                    return a.pageNum - b.pageNum;
+                });
+                
+                if (itemsInRow.length > 1) {
+                    rows.push(itemsInRow);
+                } else {
+                    rows.push([{ text: itemsInRow[0].text, isParagraph: true, pageNum: itemsInRow[0].pageNum }]);
+                }
+            });
+            
+            // Reconstruct text with tables
+            let output = '';
+            let inTable = false;
+            let currentPage = 0;
+            
+            rows.forEach((row, rowIndex) => {
+                const rowPage = row[0]?.pageNum || 1;
+                
+                // Insert page marker when page changes
+                if (rowPage !== currentPage) {
+                    if (inTable) {
+                        // Continue the table across pages without closing it
+                        output += `\n[CONTINUED ON PAGE ${rowPage}]\n`;
+                    } else {
+                        output += `\n=== Page ${rowPage} ===\n\n`;
+                    }
+                    currentPage = rowPage;
+                }
+                
+                // Check if this row looks like a table
+                const isTableRow = row.length > 1 && row.every(item => !item.isParagraph);
+                
+                if (isTableRow) {
+                    if (!inTable) {
+                        output += '\n[TABLE START]\n';
+                        inTable = true;
+                    }
+                    
+                    // Format as a pipe-separated row
+                    const rowText = row.map(item => item.text.trim()).join(' | ');
+                    output += rowText + '\n';
+                    
+                    // Check if next row might be a different table or regular text
+                    const nextRow = rows[rowIndex + 1];
+                    if (!nextRow || nextRow.length <= 1 || nextRow[0].isParagraph) {
+                        output += '[TABLE END]\n\n';
+                        inTable = false;
+                    }
+                } else {
+                    if (inTable) {
+                        output += '[TABLE END]\n\n';
+                        inTable = false;
+                    }
+                    // Regular text
+                    const text = row.map(item => item.text).join(' ');
+                    output += text + '\n';
+                }
+            });
+            
+            if (inTable) {
+                output += '[TABLE END]\n\n';
+            }
+            
+            return output;
+        }
+
+        function extractFromLocalPdf() {
+            extractAndShow();
+        }
+
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const statusDiv = document.getElementById('status');
+            const outputDiv = document.getElementById('output');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            statusDiv.innerHTML = '<div class="status">Extracting text from uploaded PDF...</div>';
+            outputDiv.textContent = '';
+            
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                await extractTextFromBuffer(arrayBuffer, statusDiv, outputDiv, downloadBtn);
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status" style="background:#ffcdd2;border-left-color:#f44336;">
+                    ✗ Error: ${error.message}
+                </div>`;
+                console.error('Error:', error);
+            }
+        }
+
+        async function extractAndShow() {
+            const statusDiv = document.getElementById('status');
+            const outputDiv = document.getElementById('output');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            statusDiv.innerHTML = '<div class="status">Loading syllabus.pdf...</div>';
+            outputDiv.textContent = '';
+            
+            try {
+                // Fetch the PDF file
+                const response = await fetch('syllabus.pdf');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const arrayBuffer = await response.arrayBuffer();
+                if (arrayBuffer.byteLength === 0) {
+                    throw new Error('PDF file is empty or could not be loaded');
+                }
+                
+                statusDiv.innerHTML = '<div class="status">Extracting text from PDF...</div>';
+                
+                await extractTextFromBuffer(arrayBuffer, statusDiv, outputDiv, downloadBtn);
+                
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status" style="background:#ffcdd2;border-left-color:#f44336;">
+                    ✗ Error: ${error.message}
+                </div>`;
+                console.error('Error:', error);
+            }
+        }
+
+        async function extractTextFromBuffer(arrayBuffer, statusDiv, outputDiv, downloadBtn) {
+            statusDiv.innerHTML = '<div class="status">Extracting text from PDF...</div>';
+            
+            // Load PDF
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            
+            // Extract text content from ALL pages first
+            let allPagesTextContent = [];
+            
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                // Add page marker to each text item
+                textContent.items.forEach(item => {
+                    item._pageNum = i;
+                });
+                allPagesTextContent.push(textContent);
+            }
+            
+            // Process all pages together to detect multi-page tables
+            const fullText = reconstructAllPagesWithTables(allPagesTextContent);
+            
+            // Store extracted text
+            extractedText = fullText;
+            
+            // Show in output
+            outputDiv.textContent = fullText.length > 10000 
+                ? fullText.substring(0, 10000) + '\n\n... [TEXT TRUNCATED FOR DISPLAY - FULL TEXT WILL BE IN DOWNLOADED FILE] ...'
+                : fullText;
+            
+            statusDiv.innerHTML = `<div class="status" style="background:#c8e6c9;border-left-color:#4caf50;">
+                ✓ Success! Extracted ${fullText.length.toLocaleString()} characters from ${pdf.numPages} page(s).
+            </div>`;
+            
+            downloadBtn.style.display = 'inline-block';
+        }
+        
+        function downloadTxt() {
+            if (!extractedText) {
+                alert('No text extracted yet!');
+                return;
+            }
+            
+            const blob = new Blob([extractedText], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'syllabus-extracted.txt';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
+

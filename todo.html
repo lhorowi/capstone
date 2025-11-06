@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List - Syllabus Analyzer</title>
+    <link rel="stylesheet" href="todo.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="nav-brand">
+                <h1>✅ To-Do List</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">📚 Syllabus Analyzer</a>
+                <a href="calendar.html" class="nav-link">📅 Calendar</a>
+                <a href="todo.html" class="nav-link active">✅ To-Do List</a>
+                <a href="rewards.html" class="nav-link">🎮 My Study Buddy</a>
+            </div>
+        </nav>
+
+        <!-- Points Banner -->
+        <div class="points-banner" id="pointsBanner">
+            <div class="points-info-small">
+                <span class="points-icon-small">⭐</span>
+                <span class="points-text" id="currentPoints">0 points</span>
+                <span class="level-text">Level <span id="currentLevel">1</span></span>
+            </div>
+            <a href="rewards.html" class="btn btn-primary btn-small">🎮 View My Study Buddy</a>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button id="addTodoBtn" class="btn btn-primary">+ Add Task</button>
+            <button id="importFromCalendarBtn" class="btn btn-secondary">📅 Import from Calendar</button>
+            <button id="clearCompletedBtn" class="btn btn-secondary">🗑️ Clear Completed</button>
+        </div>
+
+        <!-- Filter Options -->
+        <div class="filter-section">
+            <div class="filter-group">
+                <label>Show:</label>
+                <select id="filterStatus" class="filter-select">
+                    <option value="all">All Tasks</option>
+                    <option value="active">Active Only</option>
+                    <option value="completed">Completed Only</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Priority:</label>
+                <select id="filterPriority" class="filter-select">
+                    <option value="all">All Priorities</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Class:</label>
+                <select id="filterClass" class="filter-select">
+                    <option value="all">All Classes</option>
+                    <!-- Classes will be populated dynamically -->
+                </select>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-value" id="totalTasks">0</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="activeTasks">0</div>
+                <div class="stat-label">Active</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completedTasks">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="dueSoonTasks">0</div>
+                <div class="stat-label">Due Soon</div>
+            </div>
+        </div>
+
+        <!-- Class Legend -->
+        <div class="class-legend" id="classLegend" style="display: none;">
+            <h3>📚 Classes</h3>
+            <div class="legend-items" id="legendItems">
+                <!-- Class legend items will be populated here -->
+            </div>
+        </div>
+
+        <!-- To-Do List -->
+        <div class="todo-panel">
+            <div id="todoList" class="todo-list">
+                <!-- To-do items will be listed here -->
+            </div>
+        </div>
+
+        <!-- Add Todo Modal -->
+        <div id="addTodoModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add New Task</h3>
+                    <button id="closeTodoModal" class="close-btn">×</button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTodoForm">
+                        <div class="form-group">
+                            <label for="todoTitle">Task:</label>
+                            <input type="text" id="todoTitle" required placeholder="e.g., Study for midterm">
+                        </div>
+                        <div class="form-group">
+                            <label for="todoClass">Class (optional):</label>
+                            <select id="todoClass">
+                                <option value="">No class</option>
+                                <!-- Classes will be populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="todoPriority">Priority:</label>
+                            <select id="todoPriority">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="todoDueDate">Due Date (optional):</label>
+                            <input type="date" id="todoDueDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="todoDescription">Description:</label>
+                            <textarea id="todoDescription" rows="3" placeholder="Additional notes..."></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Add Task</button>
+                            <button type="button" id="cancelTodo" class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assignment Breakdown Modal -->
+        <div id="breakdownModal" class="modal" style="display: none;">
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h3>📝 Break Down Assignment</h3>
+                    <button id="closeBreakdownModal" class="close-btn">×</button>
+                </div>
+                <div class="modal-body">
+                    <!-- Input Form -->
+                    <div id="breakdownForm" class="breakdown-form">
+                        <h4>Assignment Instructions</h4>
+                        <p style="color: #666; margin-bottom: 1rem;">Paste your assignment instructions and let AI break them into manageable steps with suggested deadlines.</p>
+                        
+                        <div class="form-group">
+                            <label for="breakdownInstructions">Assignment Instructions:</label>
+                            <textarea id="breakdownInstructions" rows="10" required 
+                                      placeholder="Paste the full assignment instructions here..."></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button class="btn btn-primary" onclick="analyzeAssignmentBreakdown()">🤖 Analyze with AI Coach</button>
+                            <button class="btn btn-secondary" onclick="closeBreakdownModal()">Cancel</button>
+                        </div>
+                    </div>
+
+                    <!-- Processing -->
+                    <div id="breakdownProcessing" class="processing-section" style="display: none;">
+                        <div class="spinner"></div>
+                        <h4>AI Coach is analyzing...</h4>
+                        <p>Breaking down into manageable steps...</p>
+                    </div>
+
+                    <!-- Results -->
+                    <div id="breakdownResults" class="breakdown-results" style="display: none;">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="todo.js"></script>
+</body>
+</html>
+
