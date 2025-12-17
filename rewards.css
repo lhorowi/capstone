@@ -215,57 +215,164 @@ body {
     justify-content: center;
 }
 
-.character-body {
-    width: 150px;
-    height: 250px;
-    background: #ffd1a3;
-    border-radius: 50px;
+/* Monster Body Styles */
+.monster-body {
+    width: 180px;
+    height: 200px;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    padding-top: 20px;
+    justify-content: center;
     transition: all 0.3s ease;
+    z-index: 1;
 }
 
-.character-face {
-    width: 100px;
-    height: 100px;
-    background: inherit;
+/* Different body shapes */
+.monster-round {
     border-radius: 50%;
+}
+
+.monster-square {
+    border-radius: 10px;
+}
+
+.monster-triangle {
+    width: 0;
+    height: 0;
+    border-left: 90px solid transparent;
+    border-right: 90px solid transparent;
+    border-bottom: 200px solid;
+    background: none !important;
+}
+
+.monster-triangle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 90px solid transparent;
+    border-right: 90px solid transparent;
+    border-bottom: 200px solid;
+    border-bottom-color: inherit;
+}
+
+.monster-blob {
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    animation: blob 7s ease-in-out infinite;
+}
+
+@keyframes blob {
+    0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+    25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+    50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+    75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+}
+
+.monster-star {
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.monster-hexagon {
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+/* Monster Face */
+.monster-face {
+    position: relative;
+    z-index: 3;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
+    width: 100%;
+    height: 100%;
 }
 
-.eyes {
-    font-size: 2rem;
+.monster-eyes {
+    font-size: 2.5rem;
     margin-bottom: 0.5rem;
+    z-index: 4;
 }
 
-.mouth {
-    font-size: 2rem;
+.monster-mouth {
+    font-size: 1.5rem;
+    font-weight: bold;
+    z-index: 4;
+    font-family: monospace;
+    letter-spacing: 0.1em;
 }
 
-.character-outfit {
+/* Monster Features */
+.monster-horns {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 4rem;
-    z-index: 2;
-}
-
-.character-accessory {
-    position: absolute;
-    top: 10px;
+    top: -30px;
     left: 50%;
     transform: translateX(-50%);
+    font-size: 2rem;
+    z-index: 5;
+}
+
+.monster-spikes {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5rem;
+    z-index: 2;
+    width: 100%;
+    text-align: center;
+}
+
+.monster-wings {
+    position: absolute;
+    left: -60px;
+    top: 50%;
+    transform: translateY(-50%);
     font-size: 3rem;
-    z-index: 3;
+    z-index: 0;
+    animation: flap 2s ease-in-out infinite;
+}
+
+.monster-wings::after {
+    content: '';
+    position: absolute;
+    right: 120px;
+    top: 0;
+    font-size: 3rem;
+    content: attr(data-wing);
+}
+
+@keyframes flap {
+    0%, 100% { transform: translateY(-50%) rotate(0deg); }
+    50% { transform: translateY(-50%) rotate(-10deg); }
+}
+
+.monster-tentacles {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    z-index: 2;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.monster-tail {
+    position: absolute;
+    right: -40px;
+    bottom: 20px;
+    font-size: 2rem;
+    z-index: 2;
+    animation: wag 1s ease-in-out infinite;
+}
+
+@keyframes wag {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(15deg); }
 }
 
 .character-name {
@@ -407,6 +514,14 @@ body {
     font-size: 0.75rem;
     color: #666;
     margin-top: 0.25rem;
+}
+
+.theme-preview {
+    width: 100%;
+    height: 40px;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    border: 2px solid rgba(0,0,0,0.1);
 }
 
 /* Achievements Section */

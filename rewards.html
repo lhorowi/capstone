@@ -51,7 +51,7 @@
             <!-- Character Display -->
             <section class="character-section">
                 <div class="character-header">
-                    <h2>Your Study Buddy</h2>
+                    <h2>Your Monster</h2>
                     <button class="btn btn-secondary" onclick="showCharacterCreator()">✏️ Customize</button>
                 </div>
                 
@@ -60,19 +60,7 @@
                         <!-- Background scene -->
                     </div>
                     <div class="character-container" id="characterContainer">
-                        <!-- Character will be displayed here -->
-                        <div class="character-body">
-                            <div class="character-face" id="characterFace">
-                                <div class="eyes">👀</div>
-                                <div class="mouth">😊</div>
-                            </div>
-                            <div class="character-outfit" id="characterOutfit">
-                                <div class="outfit-display">👕</div>
-                            </div>
-                            <div class="character-accessory" id="characterAccessory">
-                                <!-- Accessories -->
-                            </div>
-                        </div>
+                        <!-- Monster will be rendered here by JavaScript -->
                     </div>
                 </div>
                 
@@ -92,25 +80,89 @@
             <!-- Shop/Rewards -->
             <section class="shop-section">
                 <div class="shop-tabs">
-                    <button class="shop-tab active" onclick="showShopTab('outfits')">👕 Outfits</button>
-                    <button class="shop-tab" onclick="showShopTab('accessories')">👓 Accessories</button>
+                    <button class="shop-tab active" onclick="showShopTab('bodyShapes')">🔷 Body Shape</button>
+                    <button class="shop-tab" onclick="showShopTab('bodyColors')">🎨 Body Color</button>
+                    <button class="shop-tab" onclick="showShopTab('eyes')">👀 Eyes</button>
+                    <button class="shop-tab" onclick="showShopTab('mouths')">😊 Mouth</button>
+                    <button class="shop-tab" onclick="showShopTab('horns')">🦌 Horns</button>
+                    <button class="shop-tab" onclick="showShopTab('spikes')">🌵 Spikes</button>
+                    <button class="shop-tab" onclick="showShopTab('tentacles')">🐙 Tentacles</button>
+                    <button class="shop-tab" onclick="showShopTab('wings')">🦇 Wings</button>
+                    <button class="shop-tab" onclick="showShopTab('tails')">🐍 Tail</button>
                     <button class="shop-tab" onclick="showShopTab('scenes')">🏞️ Scenes</button>
+                    <button class="shop-tab" onclick="showShopTab('themes')">🎨 Themes</button>
                     <button class="shop-tab" onclick="showShopTab('rewards')">🎁 Rewards</button>
                 </div>
 
-                <!-- Outfits Tab -->
-                <div class="shop-content" id="outfitsTab">
-                    <h3>👕 Outfits</h3>
-                    <div class="shop-grid" id="outfitsGrid">
-                        <!-- Outfits will be populated here -->
+                <!-- Body Shapes Tab -->
+                <div class="shop-content" id="bodyShapesTab">
+                    <h3>🔷 Body Shapes</h3>
+                    <div class="shop-grid" id="bodyShapesGrid">
+                        <!-- Body shapes will be populated here -->
                     </div>
                 </div>
 
-                <!-- Accessories Tab -->
-                <div class="shop-content" id="accessoriesTab" style="display: none;">
-                    <h3>👓 Accessories</h3>
-                    <div class="shop-grid" id="accessoriesGrid">
-                        <!-- Accessories will be populated here -->
+                <!-- Body Colors Tab -->
+                <div class="shop-content" id="bodyColorsTab" style="display: none;">
+                    <h3>🎨 Body Colors</h3>
+                    <div class="shop-grid" id="bodyColorsGrid">
+                        <!-- Body colors will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Eyes Tab -->
+                <div class="shop-content" id="eyesTab" style="display: none;">
+                    <h3>👀 Eyes</h3>
+                    <div class="shop-grid" id="eyesGrid">
+                        <!-- Eyes will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Mouths Tab -->
+                <div class="shop-content" id="mouthsTab" style="display: none;">
+                    <h3>😊 Mouths</h3>
+                    <div class="shop-grid" id="mouthsGrid">
+                        <!-- Mouths will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Horns Tab -->
+                <div class="shop-content" id="hornsTab" style="display: none;">
+                    <h3>🦌 Horns</h3>
+                    <div class="shop-grid" id="hornsGrid">
+                        <!-- Horns will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Spikes Tab -->
+                <div class="shop-content" id="spikesTab" style="display: none;">
+                    <h3>🌵 Spikes</h3>
+                    <div class="shop-grid" id="spikesGrid">
+                        <!-- Spikes will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Tentacles Tab -->
+                <div class="shop-content" id="tentaclesTab" style="display: none;">
+                    <h3>🐙 Tentacles</h3>
+                    <div class="shop-grid" id="tentaclesGrid">
+                        <!-- Tentacles will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Wings Tab -->
+                <div class="shop-content" id="wingsTab" style="display: none;">
+                    <h3>🦇 Wings</h3>
+                    <div class="shop-grid" id="wingsGrid">
+                        <!-- Wings will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Tails Tab -->
+                <div class="shop-content" id="tailsTab" style="display: none;">
+                    <h3>🐍 Tails</h3>
+                    <div class="shop-grid" id="tailsGrid">
+                        <!-- Tails will be populated here -->
                     </div>
                 </div>
 
@@ -119,6 +171,15 @@
                     <h3>🏞️ Scenes</h3>
                     <div class="shop-grid" id="scenesGrid">
                         <!-- Scenes will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Themes Tab -->
+                <div class="shop-content" id="themesTab" style="display: none;">
+                    <h3>🎨 Website Themes</h3>
+                    <p style="color: #666; margin-bottom: 1.5rem;">Change the colors of your entire website! Themes apply to all pages.</p>
+                    <div class="shop-grid" id="themesGrid">
+                        <!-- Themes will be populated here -->
                     </div>
                 </div>
 
@@ -144,39 +205,24 @@
         <div id="characterModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>Customize Your Study Buddy</h3>
+                    <h3>Customize Your Monster</h3>
                     <button id="closeCharacterModal" class="close-btn">×</button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="buddyName">Buddy Name:</label>
-                        <input type="text" id="buddyName" placeholder="Enter a name for your study buddy">
+                        <label for="buddyName">Monster Name:</label>
+                        <input type="text" id="buddyName" placeholder="Enter a name for your monster">
                     </div>
                     
                     <div class="form-group">
-                        <label for="buddySkin">Skin Tone:</label>
-                        <div class="color-options" id="skinToneOptions">
-                            <button class="color-option" data-color="#ffd1a3" style="background: #ffd1a3;"></button>
-                            <button class="color-option" data-color="#f4c19a" style="background: #f4c19a;"></button>
-                            <button class="color-option" data-color="#d9a679" style="background: #d9a679;"></button>
-                            <button class="color-option" data-color="#c68967" style="background: #c68967;"></button>
-                            <button class="color-option" data-color="#8d5524" style="background: #8d5524;"></button>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Expression:</label>
-                        <div class="expression-options">
-                            <button class="expression-btn" data-expression="😊" onclick="selectExpression('😊')">😊</button>
-                            <button class="expression-btn" data-expression="😃" onclick="selectExpression('😃')">😃</button>
-                            <button class="expression-btn" data-expression="🤓" onclick="selectExpression('🤓')">🤓</button>
-                            <button class="expression-btn" data-expression="😎" onclick="selectExpression('😎')">😎</button>
-                            <button class="expression-btn" data-expression="🥳" onclick="selectExpression('🥳')">🥳</button>
-                        </div>
+                        <p style="color: #666; font-size: 0.9rem; margin-top: 1rem;">
+                            💡 <strong>Tip:</strong> Customize your monster's appearance in the Shop! 
+                            You can change body shapes, colors, eyes, mouths, and add features like horns, spikes, wings, tentacles, and tails.
+                        </p>
                     </div>
                     
                     <div class="form-actions">
-                        <button class="btn btn-primary" onclick="saveCharacter()">Save Changes</button>
+                        <button class="btn btn-primary" onclick="saveCharacter()">Save Name</button>
                         <button class="btn btn-secondary" onclick="closeCharacterCreator()">Cancel</button>
                     </div>
                 </div>
@@ -199,6 +245,7 @@
         </div>
     </div>
 
+    <script src="theme-loader.js"></script>
     <script src="rewards.js"></script>
 </body>
 </html>
