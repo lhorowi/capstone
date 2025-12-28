@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To-Do List - Syllabus Analyzer</title>
     <link rel="stylesheet" href="todo.css">
+    <script src="study-buddy-loader.js"></script>
 </head>
 <body>
     <div class="container">
@@ -23,12 +24,21 @@
 
         <!-- Points Banner -->
         <div class="points-banner" id="pointsBanner">
-            <div class="points-info-small">
-                <span class="points-icon-small">⭐</span>
-                <span class="points-text" id="currentPoints">0 points</span>
-                <span class="level-text">Level <span id="currentLevel">1</span></span>
+            <div class="points-banner-content">
+                <div class="monster-display-wrapper">
+                    <div class="monster-display-small" id="monsterDisplaySmall">
+                        <!-- Monster will be rendered here -->
+                    </div>
+                </div>
+                <div class="points-info-small">
+                    <span class="points-icon-small">⭐</span>
+                    <span class="points-text" id="currentPoints">0 points</span>
+                </div>
             </div>
-            <a href="rewards.html" class="btn btn-primary btn-small">🎮 View My Study Buddy</a>
+            <div class="points-banner-actions">
+                <a href="rewards.html" class="btn btn-primary btn-small">🎮 View My Study Buddy</a>
+                <button id="closeStudyBuddyBtn" class="btn-close-study-buddy" title="Close Study Buddy banner">×</button>
+            </div>
         </div>
 
         <!-- Quick Actions -->
@@ -36,6 +46,7 @@
             <button id="addTodoBtn" class="btn btn-primary">+ Add Task</button>
             <button id="importFromCalendarBtn" class="btn btn-secondary">📅 Import from Calendar</button>
             <button id="clearCompletedBtn" class="btn btn-secondary">🗑️ Clear Completed</button>
+            <button id="showStudyBuddyBtn" class="btn btn-secondary" style="display: none;">⭐ Show Study Buddy</button>
         </div>
 
         <!-- Filter Options -->
@@ -66,6 +77,21 @@
             </div>
         </div>
 
+        <!-- Class Legend -->
+        <div class="class-legend" id="classLegend" style="display: none;">
+            <h3>📚 Classes</h3>
+            <div class="legend-items" id="legendItems">
+                <!-- Class legend items will be populated here -->
+            </div>
+        </div>
+
+        <!-- To-Do List -->
+        <div class="todo-panel">
+            <div id="todoList" class="todo-list">
+                <!-- To-do items will be listed here -->
+            </div>
+        </div>
+
         <!-- Statistics -->
         <div class="stats-section">
             <div class="stat-card">
@@ -83,21 +109,6 @@
             <div class="stat-card">
                 <div class="stat-value" id="dueSoonTasks">0</div>
                 <div class="stat-label">Due Soon</div>
-            </div>
-        </div>
-
-        <!-- Class Legend -->
-        <div class="class-legend" id="classLegend" style="display: none;">
-            <h3>📚 Classes</h3>
-            <div class="legend-items" id="legendItems">
-                <!-- Class legend items will be populated here -->
-            </div>
-        </div>
-
-        <!-- To-Do List -->
-        <div class="todo-panel">
-            <div id="todoList" class="todo-list">
-                <!-- To-do items will be listed here -->
             </div>
         </div>
 

@@ -31,17 +31,26 @@ body {
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.nav-brand {
+    flex-shrink: 0;
 }
 
 .nav-brand h1 {
     font-size: 1.5rem;
     color: #333;
     margin: 0;
+    white-space: nowrap;
 }
 
 .nav-links {
     display: flex;
     gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
 .nav-link {
@@ -73,6 +82,189 @@ body {
     align-items: center;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     color: white;
+}
+
+.points-banner-content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.points-banner-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Monster Display in Banner */
+.monster-display-wrapper {
+    background: white;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.monster-display-small {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.monster-body-small {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.monster-round {
+    border-radius: 50%;
+}
+
+.monster-square {
+    border-radius: 10px;
+}
+
+.monster-triangle {
+    width: 0;
+    height: 0;
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    border-bottom: 80px solid;
+    background: none !important;
+}
+
+.monster-blob {
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+}
+
+.monster-star {
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.monster-hexagon {
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+.monster-face-small {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.monster-eyes-container-small {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 4;
+}
+
+.monster-eye-small {
+    position: absolute;
+    border-radius: 50%;
+    background: #000000;
+    z-index: 5;
+}
+
+.monster-mouth-small {
+    position: absolute;
+    z-index: 4;
+    background: #000000;
+    border: 2px solid #000000;
+}
+
+.monster-mouth-small.monster-mouth-smile {
+    border-radius: 0 0 50% 50%;
+    border-top: none;
+}
+
+.monster-mouth-small.monster-mouth-frown {
+    border-radius: 50% 50% 0 0;
+    border-bottom: none;
+}
+
+.monster-mouth-small.monster-mouth-straight {
+    border-radius: 0;
+    border-top: none;
+    border-bottom: none;
+}
+
+.monster-mouth-small.monster-mouth-open {
+    border-radius: 50%;
+    background: transparent;
+}
+
+.monster-horns-small {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    width: 10px;
+    height: 10px;
+    background: #8B4513;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.monster-spikes-small {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    width: 4px;
+    height: 8px;
+    background: #333;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.monster-wings-small {
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    width: 20px;
+    height: 30px;
+    background: #333;
+    clip-path: polygon(0% 0%, 100% 0%, 80% 50%, 100% 100%, 0% 100%, 20% 50%);
+}
+
+.monster-tentacles-small {
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    width: 8px;
+    height: 15px;
+    background: #8B5CF6;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+}
+
+.monster-tail-small {
+    position: absolute;
+    right: -15px;
+    bottom: 10px;
+    z-index: 2;
+    width: 5px;
+    height: 15px;
+    background: #8B5CF6;
+    border-radius: 50%;
 }
 
 .points-info-small {
@@ -445,6 +637,29 @@ body {
 .btn-small {
     padding: 0.375rem 0.75rem;
     font-size: 0.8rem;
+}
+
+.btn-close-study-buddy {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.btn-close-study-buddy:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
 }
 
 /* Modal Styles */

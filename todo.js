@@ -38,6 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
     updateFilterClassSelect();
     updateStatistics();
     updatePointsBanner();
+    updateMonsterDisplay();
+    loadStudyBuddyVisibility();
     renderTodoList();
     setupEventListeners();
     checkForCalendarImport();
@@ -81,6 +83,18 @@ function setupEventListeners() {
     
     importFromCalendarBtn.addEventListener('click', importFromCalendar);
     clearCompletedBtn.addEventListener('click', clearCompleted);
+    
+    // Study Buddy close button
+    const closeStudyBuddyBtn = document.getElementById('closeStudyBuddyBtn');
+    if (closeStudyBuddyBtn) {
+        closeStudyBuddyBtn.addEventListener('click', closeStudyBuddy);
+    }
+    
+    // Study Buddy show button
+    const showStudyBuddyBtn = document.getElementById('showStudyBuddyBtn');
+    if (showStudyBuddyBtn) {
+        showStudyBuddyBtn.addEventListener('click', showStudyBuddy);
+    }
     
     // Breakdown modal listeners
     const closeBreakdownModal = document.getElementById('closeBreakdownModal');
@@ -338,14 +352,234 @@ function awardPointsForCompletion(todo) {
 function updatePointsBanner() {
     const playerData = JSON.parse(localStorage.getItem('studyBuddyPlayerData') || '{"points":0,"level":1}');
     const pointsText = document.getElementById('currentPoints');
-    const levelText = document.getElementById('currentLevel');
     
     if (pointsText) {
         pointsText.textContent = `${playerData.points} points`;
     }
     
-    if (levelText) {
-        levelText.textContent = playerData.level;
+    updateMonsterDisplay();
+}
+
+function updateMonsterDisplay() {
+    const container = document.getElementById('monsterDisplaySmall');
+    if (!container) return;
+    
+    // Load character data
+    const savedEquipped = localStorage.getItem('studyBuddyEquipped');
+    let equipped = {
+        bodyShape: 'round',
+        bodyColor: '#8B5CF6',
+        eyes: [
+            { id: 1, x: 40, y: 35, size: 12, color: '#000000' },
+            { id: 2, x: 60, y: 35, size: 12, color: '#000000' }
+        ],
+        mouth: { type: 'smile', x: 50, y: 60, width: 20, height: 10 },
+        horns: null,
+        spikes: null,
+        tentacles: null,
+        wings: null,
+        tail: null
+    };
+    
+    if (savedEquipped) {
+        const loaded = JSON.parse(savedEquipped);
+        equipped = {
+            bodyShape: loaded.bodyShape || 'round',
+            bodyColor: loaded.bodyColor || '#8B5CF6',
+            eyes: loaded.eyes || [
+                { id: 1, x: 40, y: 35, size: 12, color: '#000000' },
+                { id: 2, x: 60, y: 35, size: 12, color: '#000000' }
+            ],
+            mouth: loaded.mouth || { type: 'smile', x: 50, y: 60, width: 20, height: 10 },
+            horns: (loaded.horns && typeof loaded.horns === 'object') ? loaded.horns : (loaded.horns ? { type: loaded.horns, x: 50, y: 0 } : null),
+            spikes: loaded.spikes || null,
+            tentacles: (loaded.tentacles && typeof loaded.tentacles === 'object') ? loaded.tentacles : (loaded.tentacles ? { type: loaded.tentacles, x: 50, y: 100 } : null),
+            wings: loaded.wings || null,
+            tail: (loaded.tail && typeof loaded.tail === 'object') ? loaded.tail : (loaded.tail ? { type: loaded.tail, x: 100, y: 50 } : null)
+        };
+    }
+    
+    // Clear and rebuild monster
+    container.innerHTML = '';
+    
+    // Create monster body with shape
+    const body = document.createElement('div');
+    body.className = `monster-body-small monster-${equipped.bodyShape || 'round'}`;
+    
+    // For triangle, use border color instead of background
+    if (equipped.bodyShape === 'triangle') {
+        body.style.borderBottomColor = equipped.bodyColor || '#8B5CF6';
+    } else {
+        body.style.background = equipped.bodyColor || '#8B5CF6';
+    }
+    
+    // Add horns on top (shape-based) - now positionable
+    if (equipped.horns) {
+        const horns = document.createElement('div');
+        const hornsData = typeof equipped.horns === 'object' ? equipped.horns : { type: equipped.horns, x: 50, y: 0 };
+        horns.className = `monster-horns-small monster-horns-${hornsData.type || equipped.horns}`;
+        horns.style.position = 'absolute';
+        horns.style.left = hornsData.x + '%';
+        horns.style.top = hornsData.y + '%';
+        horns.style.transform = 'translate(-50%, -50%)';
+        horns.style.zIndex = '5';
+        body.appendChild(horns);
+    }
+    
+    // Add face
+    const face = document.createElement('div');
+    face.className = 'monster-face-small';
+    
+    // Add eyes as circles (white circle with colored pupil on top)
+    const eyesContainer = document.createElement('div');
+    eyesContainer.className = 'monster-eyes-container-small';
+    
+    const eyes = equipped.eyes || [];
+    eyes.forEach(eye => {
+        // Create eye wrapper
+        const eyeWrapper = document.createElement('div');
+        eyeWrapper.className = 'monster-eye-wrapper-small';
+        const eyeSize = eye.size * 0.6; // Scale down for small display
+        eyeWrapper.style.left = eye.x + '%';
+        eyeWrapper.style.top = eye.y + '%';
+        eyeWrapper.style.width = eyeSize + 'px';
+        eyeWrapper.style.height = eyeSize + 'px';
+        eyeWrapper.style.position = 'absolute';
+        eyeWrapper.style.transform = 'translate(-50%, -50%)';
+        
+        // White circle (eye base)
+        const eyeBase = document.createElement('div');
+        eyeBase.className = 'monster-eye-base-small';
+        eyeBase.style.width = '100%';
+        eyeBase.style.height = '100%';
+        eyeBase.style.background = '#FFFFFF';
+        eyeBase.style.borderRadius = '50%';
+        eyeBase.style.border = '1px solid #000000';
+        eyeBase.style.position = 'relative';
+        
+        // Colored circle (pupil) on top
+        const eyePupil = document.createElement('div');
+        eyePupil.className = 'monster-eye-pupil-small';
+        eyePupil.style.width = '60%';
+        eyePupil.style.height = '60%';
+        eyePupil.style.background = eye.color || '#000000';
+        eyePupil.style.borderRadius = '50%';
+        eyePupil.style.position = 'absolute';
+        eyePupil.style.top = '50%';
+        eyePupil.style.left = '50%';
+        eyePupil.style.transform = 'translate(-50%, -50%)';
+        
+        eyeBase.appendChild(eyePupil);
+        eyeWrapper.appendChild(eyeBase);
+        eyesContainer.appendChild(eyeWrapper);
+    });
+    
+    face.appendChild(eyesContainer);
+    
+    // Add mouth (shape-based)
+    const mouth = document.createElement('div');
+    mouth.className = `monster-mouth-small monster-mouth-${equipped.mouth?.type || 'smile'}`;
+    const mouthData = equipped.mouth || { type: 'smile', x: 50, y: 60, width: 20, height: 10 };
+    mouth.style.left = mouthData.x + '%';
+    mouth.style.top = mouthData.y + '%';
+    mouth.style.width = (mouthData.width * 0.6) + 'px';
+    mouth.style.height = (mouthData.height * 0.6) + 'px';
+    mouth.style.transform = 'translate(-50%, -50%)';
+    face.appendChild(mouth);
+    
+    body.appendChild(face);
+    
+    // Add spikes (shape-based)
+    if (equipped.spikes) {
+        const spikes = document.createElement('div');
+        spikes.className = `monster-spikes-small monster-spikes-${equipped.spikes}`;
+        body.appendChild(spikes);
+    }
+    
+    // Add wings (shape-based)
+    if (equipped.wings) {
+        const wings = document.createElement('div');
+        wings.className = `monster-wings-small monster-wings-${equipped.wings}`;
+        body.appendChild(wings);
+    }
+    
+    // Add tentacles (shape-based) - now positionable
+    if (equipped.tentacles) {
+        const tentacles = document.createElement('div');
+        const tentaclesData = typeof equipped.tentacles === 'object' ? equipped.tentacles : { type: equipped.tentacles, x: 50, y: 100 };
+        tentacles.className = `monster-tentacles-small monster-tentacles-${tentaclesData.type || equipped.tentacles}`;
+        tentacles.style.position = 'absolute';
+        tentacles.style.left = tentaclesData.x + '%';
+        tentacles.style.top = tentaclesData.y + '%';
+        tentacles.style.transform = 'translate(-50%, -50%)';
+        tentacles.style.zIndex = '2';
+        body.appendChild(tentacles);
+    }
+    
+    // Add tail (shape-based) - now positionable
+    if (equipped.tail) {
+        const tail = document.createElement('div');
+        const tailData = typeof equipped.tail === 'object' ? equipped.tail : { type: equipped.tail, x: 100, y: 50 };
+        tail.className = `monster-tail-small monster-tail-${tailData.type || equipped.tail}`;
+        tail.style.position = 'absolute';
+        tail.style.left = tailData.x + '%';
+        tail.style.top = tailData.y + '%';
+        tail.style.transform = 'translate(-50%, -50%)';
+        tail.style.zIndex = '2';
+        body.appendChild(tail);
+    }
+    
+    container.appendChild(body);
+}
+
+function closeStudyBuddy() {
+    const pointsBanner = document.getElementById('pointsBanner');
+    const showStudyBuddyBtn = document.getElementById('showStudyBuddyBtn');
+    
+    if (pointsBanner) {
+        pointsBanner.style.display = 'none';
+        localStorage.setItem('studyBuddyBannerClosed', 'true');
+    }
+    
+    if (showStudyBuddyBtn) {
+        showStudyBuddyBtn.style.display = 'inline-block';
+    }
+}
+
+function showStudyBuddy() {
+    const pointsBanner = document.getElementById('pointsBanner');
+    const showStudyBuddyBtn = document.getElementById('showStudyBuddyBtn');
+    
+    if (pointsBanner) {
+        pointsBanner.style.display = 'flex';
+        localStorage.removeItem('studyBuddyBannerClosed');
+        updateMonsterDisplay(); // Refresh monster when showing banner
+    }
+    
+    if (showStudyBuddyBtn) {
+        showStudyBuddyBtn.style.display = 'none';
+    }
+}
+
+function loadStudyBuddyVisibility() {
+    const isClosed = localStorage.getItem('studyBuddyBannerClosed') === 'true';
+    const pointsBanner = document.getElementById('pointsBanner');
+    const showStudyBuddyBtn = document.getElementById('showStudyBuddyBtn');
+    
+    if (pointsBanner) {
+        if (isClosed) {
+            pointsBanner.style.display = 'none';
+        } else {
+            pointsBanner.style.display = 'flex';
+        }
+    }
+    
+    if (showStudyBuddyBtn) {
+        if (isClosed) {
+            showStudyBuddyBtn.style.display = 'inline-block';
+        } else {
+            showStudyBuddyBtn.style.display = 'none';
+        }
     }
 }
 

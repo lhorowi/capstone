@@ -2,6 +2,7 @@
 
 // Global state
 let currentDate = new Date();
+let currentView = 'month'; // 'month' or 'week'
 let events = [];
 let syllabusData = null;
 let classes = [];
@@ -42,6 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
     loadTodosFromStorage();
     loadClassesFromStorage();
     checkForSyllabusData();
+    // Load view preference
+    const savedView = localStorage.getItem('calendarView');
+    if (savedView === 'week' || savedView === 'month') {
+        currentView = savedView;
+    }
+    updateViewButtons();
     renderCalendar();
     updateEventsList();
     updateTodoList();
@@ -52,17 +59,42 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupEventListeners() {
     // Navigation buttons
     prevMonthBtn.addEventListener('click', () => {
-        currentDate.setMonth(currentDate.getMonth() - 1);
+        if (currentView === 'month') {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+        } else {
+            // Move back one week
+            currentDate.setDate(currentDate.getDate() - 7);
+        }
         renderCalendar();
     });
     
     nextMonthBtn.addEventListener('click', () => {
-        currentDate.setMonth(currentDate.getMonth() + 1);
+        if (currentView === 'month') {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+        } else {
+            // Move forward one week
+            currentDate.setDate(currentDate.getDate() + 7);
+        }
         renderCalendar();
     });
     
     todayBtn.addEventListener('click', () => {
         currentDate = new Date();
+        renderCalendar();
+    });
+    
+    // View toggle buttons
+    document.getElementById('monthViewBtn')?.addEventListener('click', () => {
+        currentView = 'month';
+        localStorage.setItem('calendarView', 'month');
+        updateViewButtons();
+        renderCalendar();
+    });
+    
+    document.getElementById('weekViewBtn')?.addEventListener('click', () => {
+        currentView = 'week';
+        localStorage.setItem('calendarView', 'week');
+        updateViewButtons();
         renderCalendar();
     });
     
@@ -138,6 +170,14 @@ function setupEventListeners() {
 }
 
 function renderCalendar() {
+    if (currentView === 'week') {
+        renderWeekView();
+    } else {
+        renderMonthView();
+    }
+}
+
+function renderMonthView() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     
@@ -149,6 +189,7 @@ function renderCalendar() {
     
     // Clear calendar grid
     calendarGrid.innerHTML = '';
+    calendarGrid.className = 'calendar-grid month-view';
     
     // Get first day of month and number of days
     const firstDay = new Date(year, month, 1);
@@ -166,6 +207,136 @@ function renderCalendar() {
     for (let day = 1; day <= daysInMonth; day++) {
         const dayEl = createDayElement(day, false);
         calendarGrid.appendChild(dayEl);
+    }
+}
+
+function renderWeekView() {
+    // Get the start of the week (Sunday)
+    const weekStart = new Date(currentDate);
+    const dayOfWeek = weekStart.getDay();
+    weekStart.setDate(weekStart.getDate() - dayOfWeek);
+    
+    // Update display to show week range
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+    
+    const startMonth = weekStart.toLocaleDateString('en-US', { month: 'short' });
+    const endMonth = weekEnd.toLocaleDateString('en-US', { month: 'short' });
+    const startDay = weekStart.getDate();
+    const endDay = weekEnd.getDate();
+    const year = weekStart.getFullYear();
+    
+    if (startMonth === endMonth) {
+        currentMonthEl.textContent = `${startMonth} ${startDay}-${endDay}, ${year}`;
+    } else {
+        currentMonthEl.textContent = `${startMonth} ${startDay} - ${endMonth} ${endDay}, ${year}`;
+    }
+    
+    // Clear calendar grid
+    calendarGrid.innerHTML = '';
+    calendarGrid.className = 'calendar-grid week-view';
+    
+    // Render 7 days of the week
+    for (let i = 0; i < 7; i++) {
+        const dayDate = new Date(weekStart);
+        dayDate.setDate(weekStart.getDate() + i);
+        const dayEl = createWeekDayElement(dayDate);
+        calendarGrid.appendChild(dayEl);
+    }
+}
+
+function createWeekDayElement(dayDate) {
+    const dayEl = document.createElement('div');
+    dayEl.className = 'calendar-day week-day';
+    
+    const dayNumber = dayDate.getDate();
+    const dayName = dayDate.toLocaleDateString('en-US', { weekday: 'short' });
+    
+    // Check if this is today
+    const today = new Date();
+    if (dayDate.toDateString() === today.toDateString()) {
+        dayEl.classList.add('today');
+    }
+    
+    dayEl.innerHTML = `
+        <div class="week-day-header">
+            <div class="week-day-name">${dayName}</div>
+            <div class="day-number">${dayNumber}</div>
+        </div>
+        <div class="week-day-events"></div>
+    `;
+    
+    // Add events for this day
+    const dayEvents = getEventsForDate(dayDate);
+    const eventsContainer = dayEl.querySelector('.week-day-events');
+    
+    if (dayEvents.length > 0) {
+        dayEl.classList.add('has-events');
+        dayEvents.forEach(event => {
+            const eventEl = document.createElement('div');
+            eventEl.className = `event-item ${getEventColorClass(event)}`;
+            eventEl.innerHTML = `
+                <div class="event-time">${event.time || ''}</div>
+                <div class="event-title">${event.title}</div>
+            `;
+            eventEl.title = `${event.title} - ${event.description || ''}`;
+            eventEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showEventDetails(event);
+            });
+            eventsContainer.appendChild(eventEl);
+        });
+    }
+    
+    // Add click listener for adding events
+    dayEl.addEventListener('click', () => {
+        addEventToDate(dayDate);
+    });
+    
+    return dayEl;
+}
+
+function getEventsForDate(date) {
+    const dateString = date.toISOString().split('T')[0];
+    return events.filter(event => {
+        const eventDate = new Date(event.date);
+        const eventDateString = eventDate.toISOString().split('T')[0];
+        return eventDateString === dateString;
+    });
+}
+
+function addEventToDate(date) {
+    const dateString = date.toISOString().split('T')[0];
+    document.getElementById('eventDate').value = dateString;
+    addEventModal.style.display = 'flex';
+}
+
+function updateViewButtons() {
+    const monthBtn = document.getElementById('monthViewBtn');
+    const weekBtn = document.getElementById('weekViewBtn');
+    
+    if (monthBtn && weekBtn) {
+        if (currentView === 'month') {
+            monthBtn.classList.add('active');
+            weekBtn.classList.remove('active');
+        } else {
+            weekBtn.classList.add('active');
+            monthBtn.classList.remove('active');
+        }
+    }
+    
+    // Update button labels
+    const prevBtn = document.getElementById('prevMonth');
+    const nextBtn = document.getElementById('nextMonth');
+    
+    if (prevBtn && nextBtn) {
+        if (currentView === 'month') {
+            prevBtn.textContent = '← Previous';
+            nextBtn.textContent = 'Next →';
+        } else {
+            prevBtn.textContent = '← Previous Week';
+            nextBtn.textContent = 'Next Week →';
+        }
     }
 }
 

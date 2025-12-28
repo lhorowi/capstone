@@ -30,20 +30,6 @@
                     <div class="points-label">Study Points</div>
                 </div>
             </div>
-            <div class="stats-mini">
-                <div class="stat-mini">
-                    <span class="stat-mini-value" id="completedCount">0</span>
-                    <span class="stat-mini-label">Completed</span>
-                </div>
-                <div class="stat-mini">
-                    <span class="stat-mini-value" id="streakCount">0</span>
-                    <span class="stat-mini-label">Day Streak</span>
-                </div>
-                <div class="stat-mini">
-                    <span class="stat-mini-value" id="levelValue">1</span>
-                    <span class="stat-mini-label">Level</span>
-                </div>
-            </div>
         </div>
 
         <!-- Main Content Grid -->
@@ -52,7 +38,10 @@
             <section class="character-section">
                 <div class="character-header">
                     <h2>Your Monster</h2>
-                    <button class="btn btn-secondary" onclick="showCharacterCreator()">✏️ Customize</button>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-small btn-secondary" onclick="resetToDefault()" id="resetButton">Reset to Default</button>
+                        <button class="btn btn-secondary" onclick="showCharacterCreator()">✏️ Customize</button>
+                    </div>
                 </div>
                 
                 <div class="character-display" id="characterDisplay">
@@ -65,64 +54,64 @@
                 </div>
                 
                 <div class="character-name" id="characterName">My Study Buddy</div>
-                
-                <!-- Quick Stats -->
-                <div class="character-stats">
-                    <div class="stat-bar">
-                        <div class="stat-label">Motivation Level</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="motivationBar" style="width: 50%;"></div>
-                        </div>
-                    </div>
-                </div>
             </section>
 
             <!-- Shop/Rewards -->
             <section class="shop-section">
                 <div class="shop-tabs">
-                    <button class="shop-tab active" onclick="showShopTab('bodyShapes')">🔷 Body Shape</button>
-                    <button class="shop-tab" onclick="showShopTab('bodyColors')">🎨 Body Color</button>
-                    <button class="shop-tab" onclick="showShopTab('eyes')">👀 Eyes</button>
-                    <button class="shop-tab" onclick="showShopTab('mouths')">😊 Mouth</button>
+                    <button class="shop-tab active" onclick="showShopTab('bodyShapes')">🔷 Body</button>
+                    <button class="shop-tab" onclick="showShopTab('eyeColors')">👁️ Eyes</button>
+                    <button class="shop-tab" onclick="showShopTab('mouthTypes')">😊 Mouth</button>
                     <button class="shop-tab" onclick="showShopTab('horns')">🦌 Horns</button>
-                    <button class="shop-tab" onclick="showShopTab('spikes')">🌵 Spikes</button>
                     <button class="shop-tab" onclick="showShopTab('tentacles')">🐙 Tentacles</button>
-                    <button class="shop-tab" onclick="showShopTab('wings')">🦇 Wings</button>
-                    <button class="shop-tab" onclick="showShopTab('tails')">🐍 Tail</button>
                     <button class="shop-tab" onclick="showShopTab('scenes')">🏞️ Scenes</button>
                     <button class="shop-tab" onclick="showShopTab('themes')">🎨 Themes</button>
                     <button class="shop-tab" onclick="showShopTab('rewards')">🎁 Rewards</button>
                 </div>
 
-                <!-- Body Shapes Tab -->
+                <!-- Body Shapes Tab (includes colors) -->
                 <div class="shop-content" id="bodyShapesTab">
-                    <h3>🔷 Body Shapes</h3>
+                    <h3>🔷 Body Shape</h3>
                     <div class="shop-grid" id="bodyShapesGrid">
                         <!-- Body shapes will be populated here -->
                     </div>
-                </div>
-
-                <!-- Body Colors Tab -->
-                <div class="shop-content" id="bodyColorsTab" style="display: none;">
-                    <h3>🎨 Body Colors</h3>
+                    
+                    <h3 style="margin-top: 2rem;">🎨 Body Color</h3>
+                    <p style="color: #666; margin-bottom: 1rem;">Choose a color for your monster's body (free).</p>
                     <div class="shop-grid" id="bodyColorsGrid">
                         <!-- Body colors will be populated here -->
                     </div>
                 </div>
 
-                <!-- Eyes Tab -->
-                <div class="shop-content" id="eyesTab" style="display: none;">
-                    <h3>👀 Eyes</h3>
-                    <div class="shop-grid" id="eyesGrid">
-                        <!-- Eyes will be populated here -->
+                <!-- Eye Colors Tab (includes eye manager) -->
+                <div class="shop-content" id="eyeColorsTab" style="display: none;">
+                    <h3>👁️ Eye Manager</h3>
+                    <p style="color: #666; margin-bottom: 1rem;">Add, remove, and customize your monster's eyes. Adjust position, size, and color for each eye.</p>
+                    <div style="margin-bottom: 1rem;">
+                        <button class="btn btn-primary" onclick="addEye()">+ Add Eye</button>
+                    </div>
+                    <div id="eyeManagerList" class="eye-manager-list">
+                        <!-- Eye controls will be populated here -->
+                    </div>
+                    
+                    <h3 style="margin-top: 2rem;">👁️ Eye Colors</h3>
+                    <p style="color: #666; margin-bottom: 1rem;">Choose a color for your eyes' pupils (free).</p>
+                    <div class="shop-grid" id="eyeColorsGrid">
+                        <!-- Eye colors will be populated here -->
                     </div>
                 </div>
 
-                <!-- Mouths Tab -->
-                <div class="shop-content" id="mouthsTab" style="display: none;">
-                    <h3>😊 Mouths</h3>
-                    <div class="shop-grid" id="mouthsGrid">
-                        <!-- Mouths will be populated here -->
+                <!-- Mouth Types Tab -->
+                <div class="shop-content" id="mouthTypesTab" style="display: none;">
+                    <h3>😊 Mouth Types</h3>
+                    <div class="shop-grid" id="mouthTypesGrid">
+                        <!-- Mouth types will be populated here -->
+                    </div>
+                    
+                    <h3 style="margin-top: 2rem;">😊 Mouth Position</h3>
+                    <p style="color: #666; margin-bottom: 1rem;">Adjust the position of your monster's mouth.</p>
+                    <div id="mouthPositionControls" class="feature-position-controls">
+                        <!-- Mouth position controls will be populated here -->
                     </div>
                 </div>
 
@@ -132,13 +121,11 @@
                     <div class="shop-grid" id="hornsGrid">
                         <!-- Horns will be populated here -->
                     </div>
-                </div>
-
-                <!-- Spikes Tab -->
-                <div class="shop-content" id="spikesTab" style="display: none;">
-                    <h3>🌵 Spikes</h3>
-                    <div class="shop-grid" id="spikesGrid">
-                        <!-- Spikes will be populated here -->
+                    
+                    <h3 style="margin-top: 2rem;">🦌 Horns Position</h3>
+                    <p style="color: #666; margin-bottom: 1rem;">Adjust the position of your monster's horns.</p>
+                    <div id="hornsPositionControls" class="feature-position-controls">
+                        <!-- Horns position controls will be populated here -->
                     </div>
                 </div>
 
@@ -148,21 +135,11 @@
                     <div class="shop-grid" id="tentaclesGrid">
                         <!-- Tentacles will be populated here -->
                     </div>
-                </div>
-
-                <!-- Wings Tab -->
-                <div class="shop-content" id="wingsTab" style="display: none;">
-                    <h3>🦇 Wings</h3>
-                    <div class="shop-grid" id="wingsGrid">
-                        <!-- Wings will be populated here -->
-                    </div>
-                </div>
-
-                <!-- Tails Tab -->
-                <div class="shop-content" id="tailsTab" style="display: none;">
-                    <h3>🐍 Tails</h3>
-                    <div class="shop-grid" id="tailsGrid">
-                        <!-- Tails will be populated here -->
+                    
+                    <h3 style="margin-top: 2rem;">🐙 Tentacles Position</h3>
+                    <p style="color: #666; margin-bottom: 1rem;">Adjust the position of your monster's tentacles.</p>
+                    <div id="tentaclesPositionControls" class="feature-position-controls">
+                        <!-- Tentacles position controls will be populated here -->
                     </div>
                 </div>
 
@@ -176,8 +153,8 @@
 
                 <!-- Themes Tab -->
                 <div class="shop-content" id="themesTab" style="display: none;">
-                    <h3>🎨 Website Themes</h3>
-                    <p style="color: #666; margin-bottom: 1.5rem;">Change the colors of your entire website! Themes apply to all pages.</p>
+                    <h3>🎨 Website Color Themes</h3>
+                    <p style="color: #666; margin-bottom: 1.5rem;">Purchase themes with points to change the colors of your entire website! Themes apply to all pages (Syllabus Analyzer, Calendar, To-Do List, and Study Buddy).</p>
                     <div class="shop-grid" id="themesGrid">
                         <!-- Themes will be populated here -->
                     </div>
@@ -245,6 +222,7 @@
         </div>
     </div>
 
+    <script src="study-buddy-loader.js"></script>
     <script src="theme-loader.js"></script>
     <script src="rewards.js"></script>
 </body>

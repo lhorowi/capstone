@@ -15,7 +15,7 @@ body {
 }
 
 .container {
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
 }
@@ -291,28 +291,96 @@ body {
     height: 100%;
 }
 
-.monster-eyes {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
+.monster-eyes-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
     z-index: 4;
+}
+
+.monster-eye {
+    position: absolute;
+    border-radius: 50%;
+    background: #000000;
+    z-index: 5;
 }
 
 .monster-mouth {
-    font-size: 1.5rem;
-    font-weight: bold;
+    position: absolute;
     z-index: 4;
-    font-family: monospace;
-    letter-spacing: 0.1em;
+    background: #000000;
+    border: 2px solid #000000;
 }
 
-/* Monster Features */
+.monster-mouth-smile {
+    border-radius: 0 0 50% 50%;
+    border-top: none;
+}
+
+.monster-mouth-frown {
+    border-radius: 50% 50% 0 0;
+    border-bottom: none;
+}
+
+.monster-mouth-straight {
+    border-radius: 0;
+    border-top: none;
+    border-bottom: none;
+}
+
+.monster-mouth-open {
+    border-radius: 50%;
+    background: transparent;
+}
+
+.monster-mouth-big-smile {
+    border-radius: 0 0 50% 50%;
+    border-top: none;
+    height: 15px !important;
+}
+
+.monster-mouth-teeth {
+    border-radius: 0 0 50% 50%;
+    border-top: none;
+    background: #FFFFFF;
+    border-color: #000000;
+}
+
+/* Monster Features - Shape-based */
 .monster-horns {
     position: absolute;
     top: -30px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 2rem;
     z-index: 5;
+}
+
+.monster-horns-small {
+    width: 20px;
+    height: 20px;
+    background: #8B4513;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.monster-horns-big {
+    width: 30px;
+    height: 30px;
+    background: #8B4513;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.monster-horns-curved {
+    width: 25px;
+    height: 25px;
+    background: #8B4513;
+    border-radius: 50% 50% 0 0;
+}
+
+.monster-horns-spiral {
+    width: 20px;
+    height: 30px;
+    background: #8B4513;
+    border-radius: 50%;
 }
 
 .monster-spikes {
@@ -320,10 +388,21 @@ body {
     top: -20px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 1.5rem;
     z-index: 2;
     width: 100%;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.monster-spikes-back::before,
+.monster-spikes-all-over::before,
+.monster-spikes-sharp::before {
+    content: '';
+    width: 8px;
+    height: 15px;
+    background: #333;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
 }
 
 .monster-wings {
@@ -331,18 +410,30 @@ body {
     left: -60px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 3rem;
     z-index: 0;
     animation: flap 2s ease-in-out infinite;
 }
 
-.monster-wings::after {
-    content: '';
-    position: absolute;
-    right: 120px;
-    top: 0;
-    font-size: 3rem;
-    content: attr(data-wing);
+.monster-wings-bat {
+    width: 40px;
+    height: 60px;
+    background: #333;
+    clip-path: polygon(0% 0%, 100% 0%, 80% 50%, 100% 100%, 0% 100%, 20% 50%);
+}
+
+.monster-wings-angel {
+    width: 50px;
+    height: 70px;
+    background: #FFFFFF;
+    border: 2px solid #333;
+    border-radius: 50% 50% 0 0;
+}
+
+.monster-wings-dragon {
+    width: 45px;
+    height: 65px;
+    background: #8B4513;
+    clip-path: polygon(0% 20%, 50% 0%, 100% 20%, 80% 100%, 20% 100%);
 }
 
 @keyframes flap {
@@ -355,19 +446,48 @@ body {
     bottom: -40px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 2rem;
     z-index: 2;
     display: flex;
-    gap: 0.5rem;
+    gap: 5px;
+}
+
+.monster-tentacles-two::before,
+.monster-tentacles-four::before,
+.monster-tentacles-eight::before {
+    content: '';
+    width: 15px;
+    height: 30px;
+    background: #8B5CF6;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
 }
 
 .monster-tail {
     position: absolute;
     right: -40px;
     bottom: 20px;
-    font-size: 2rem;
     z-index: 2;
     animation: wag 1s ease-in-out infinite;
+}
+
+.monster-tail-short {
+    width: 10px;
+    height: 20px;
+    background: #8B5CF6;
+    border-radius: 50%;
+}
+
+.monster-tail-long {
+    width: 8px;
+    height: 40px;
+    background: #8B5CF6;
+    border-radius: 50%;
+}
+
+.monster-tail-spiked {
+    width: 12px;
+    height: 30px;
+    background: #8B5CF6;
+    clip-path: polygon(50% 0%, 0% 50%, 50% 100%, 100% 50%);
 }
 
 @keyframes wag {
@@ -510,6 +630,13 @@ body {
     color: #22c55e;
 }
 
+.shop-try-btn {
+    margin-top: 0.5rem;
+    width: 100%;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+}
+
 .shop-item-status {
     font-size: 0.75rem;
     color: #666;
@@ -522,6 +649,167 @@ body {
     border-radius: 6px;
     margin-bottom: 0.5rem;
     border: 2px solid rgba(0,0,0,0.1);
+}
+
+/* Preview Shapes for Shop */
+.preview-shape {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 0.5rem;
+    background: #8B5CF6;
+}
+
+.preview-round {
+    border-radius: 50%;
+}
+
+.preview-square {
+    border-radius: 10px;
+}
+
+.preview-triangle {
+    width: 0;
+    height: 0;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    border-bottom: 60px solid #8B5CF6;
+    background: none !important;
+}
+
+.preview-blob {
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+}
+
+.preview-star {
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.preview-hexagon {
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+.preview-mouth {
+    width: 40px;
+    height: 15px;
+    margin: 0 auto 0.5rem;
+    background: #000000;
+    border: 2px solid #000000;
+}
+
+.preview-mouth-smile {
+    border-radius: 0 0 50% 50%;
+    border-top: none;
+}
+
+.preview-mouth-frown {
+    border-radius: 50% 50% 0 0;
+    border-bottom: none;
+}
+
+.preview-mouth-straight {
+    border-radius: 0;
+    border-top: none;
+    border-bottom: none;
+}
+
+.preview-mouth-open {
+    border-radius: 50%;
+    background: transparent;
+}
+
+/* Eye Manager */
+.eye-manager-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.eye-manager-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.eye-preview {
+    flex-shrink: 0;
+}
+
+.eye-info {
+    flex: 1;
+}
+
+.eye-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.eye-controls {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.eye-controls label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.eye-position-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+}
+
+.position-label {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.position-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.position-buttons-row {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.position-buttons button {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Feature Position Controls (for mouth, horns, tentacles) */
+.feature-position-controls {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.feature-position-display {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
 }
 
 /* Achievements Section */

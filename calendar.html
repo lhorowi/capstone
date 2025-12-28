@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Academic Calendar - Syllabus Analyzer</title>
     <link rel="stylesheet" href="calendar.css">
+    <script src="study-buddy-loader.js"></script>
 </head>
 <body>
     <div class="container">
@@ -29,6 +30,10 @@
                 <button id="nextMonth" class="btn btn-secondary">Next →</button>
             </div>
             <div class="controls-right">
+                <div class="view-toggle">
+                    <button id="monthViewBtn" class="btn btn-secondary active">Month</button>
+                    <button id="weekViewBtn" class="btn btn-secondary">Week</button>
+                </div>
                 <button id="todayBtn" class="btn btn-primary">Today</button>
                 <button id="manageClasses" class="btn btn-primary">Manage Classes</button>
                 <button id="importData" class="btn btn-primary">Import Syllabus Data</button>
